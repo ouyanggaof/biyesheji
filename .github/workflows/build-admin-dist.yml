@@ -36,17 +36,26 @@ jobs:
           cache-dependency-path: ${{ env.ADMIN_DIR }}/package-lock.json
 
       # package-lock.json 若在国内镜像生成，resolved 会指向华为云等；GitHub 海外 runner 常连不上导致 npm install 失败
-      - name: Install & build
+      - name: Install dependencies
         working-directory: ${{ env.ADMIN_DIR }}
-        env:
-          # 关闭压缩，降低内存（与本地 build:nominify 一致）
-          ADMIN_NO_MINIFY: '1'
         run: |
           sed -i 's#https://repo.huaweicloud.com/repository/npm/#https://registry.npmjs.org/#g' package-lock.json
           sed -i 's#https://registry.npmmirror.com/#https://registry.npmjs.org/#g' package-lock.json
           npm config set registry https://registry.npmjs.org/
-          npm install --no-optional --no-audit --progress=false
-          node --max-old-space-size=6144 node_modules/@vue/cli-service/bin/vue-cli-service.js build
+          npm config set fetch-retries 5
+          npm config set fetch-retry-mintimeout 20000
+          npm config set fetch-retry-maxtimeout 120000
+          # npm 8+ 对老项目 peer 依赖很严，易 ERESOLVE；legacy-peer-deps 与 lockfile v1 老项目常见组合
+          npm install --no-optional --no-audit --progress=false --legacy-peer-deps
+
+      # 标准 runner 约 7GB RAM，堆设太大易被系统 OOM kill；4096 更稳
+      - name: Build admin (Vue)
+        working-directory: ${{ env.ADMIN_DIR }}
+        env:
+          ADMIN_NO_MINIFY: '1'
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: |
+          node node_modules/@vue/cli-service/bin/vue-cli-service.js build
 
       - name: Upload dist zip
         uses: actions/upload-artifact@v4
