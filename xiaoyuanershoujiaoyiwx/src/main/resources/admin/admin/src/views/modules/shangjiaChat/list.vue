@@ -236,16 +236,16 @@
 <style lang="scss" scoped>
 .slt { margin: 0 !important; display: flex; }
 .ad { margin: 0 !important; display: flex; }
-.pages /deep/ el-pagination__sizes /deep/ el-input__inner { height: 22px; line-height: 22px; }
+.pages ::v-deep el-pagination__sizes ::v-deep el-input__inner { height: 22px; line-height: 22px; }
 .el-button+.el-button { margin: 0; }
-.tables /deep/ .el-button--success { height: 35px; color: #fff; font-size: 14px; border-radius: 10px 0 10px 0; background-color: var(--publicMainColor); }
-.tables /deep/ .el-button--primary { height: 35px; color: #fff; font-size: 14px; border-radius: 10px 0 10px 0; background-color: var(--publicMainColor); }
-.tables /deep/ .el-button--danger { height: 35px; color: #fff; font-size: 14px; border-radius: 10px 0 10px 0; background-color: var(--publicMainColor); }
-.tables /deep/ .el-button { margin: 4px; }
+.tables ::v-deep .el-button--success { height: 35px; color: #fff; font-size: 14px; border-radius: 10px 0 10px 0; background-color: var(--publicMainColor); }
+.tables ::v-deep .el-button--primary { height: 35px; color: #fff; font-size: 14px; border-radius: 10px 0 10px 0; background-color: var(--publicMainColor); }
+.tables ::v-deep .el-button--danger { height: 35px; color: #fff; font-size: 14px; border-radius: 10px 0 10px 0; background-color: var(--publicMainColor); }
+.tables ::v-deep .el-button { margin: 4px; }
 .form-content { background: transparent; }
 .table-content { background: transparent; }
-.tables /deep/ .el-table__body tr { background-color: #f5f5f5 !important; color: rgba(0,1,2,1) !important; }
-.tables /deep/ .el-table__body tr.el-table__row--striped td { background: transparent; }
-.tables /deep/ .el-table__body tr.el-table__row--striped { background-color: #F5F7FA !important; color: rgba(0,0,0,1) !important; }
-.tables /deep/ .el-table__body tr:hover>td { background-color: var(--publicSubColor) !important; color: #333 !important; }
+.tables ::v-deep .el-table__body tr { background-color: #f5f5f5 !important; color: rgba(0,1,2,1) !important; }
+.tables ::v-deep .el-table__body tr.el-table__row--striped td { background: transparent; }
+.tables ::v-deep .el-table__body tr.el-table__row--striped { background-color: #F5F7FA !important; color: rgba(0,0,0,1) !important; }
+.tables ::v-deep .el-table__body tr:hover>td { background-color: var(--publicSubColor) !important; color: #333 !important; }
 </style>

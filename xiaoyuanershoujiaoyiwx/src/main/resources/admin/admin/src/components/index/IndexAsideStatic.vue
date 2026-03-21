@@ -262,7 +262,7 @@ export default {
       outline: none;
     }
 
-    & /deep/ .el-menu {
+    & ::v-deep .el-menu {
       border: 0;
       background-color: transparent;
     }
@@ -327,7 +327,7 @@ export default {
       margin: 0px 0px 0px 5px;
     }
 
-    & /deep/ .el-submenu__title {
+    & ::v-deep .el-submenu__title {
       width: 200px;
       height: auto !important;
       line-height: 40px !important;
@@ -383,7 +383,7 @@ export default {
       }
     }
 
-    & /deep/ .el-menu.el-menu--inline {
+    & ::v-deep .el-menu.el-menu--inline {
       width: 100%;
       height: auto;
       padding: 0px 0px 0px 0px;

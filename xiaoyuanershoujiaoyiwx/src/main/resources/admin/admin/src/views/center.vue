@@ -205,4 +205,5 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+/* 无组件私有样式，保留块避免 dart-sass 解析空 SCSS 报错 */
 </style>

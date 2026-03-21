@@ -478,8 +478,8 @@ export default {
   }
 
   .pages {
-    & /deep/ el-pagination__sizes{
-      & /deep/ el-input__inner {
+    & ::v-deep el-pagination__sizes{
+      & ::v-deep el-input__inner {
         height: 22px;
         line-height: 22px;
       }
@@ -492,7 +492,7 @@ export default {
   }
 
   .tables {
-	& /deep/ .el-button--success {
+	& ::v-deep .el-button--success {
 		height: 35px;
 		color: rgba(255, 255, 255, 1);
 		font-size: 14px;
@@ -503,7 +503,7 @@ export default {
 		background-color: var(--publicMainColor);
 	}
 
-	& /deep/ .el-button--primary {
+	& ::v-deep .el-button--primary {
 		height: 35px;
 		color: rgba(255, 255, 255, 1);
 		font-size: 14px;
@@ -514,7 +514,7 @@ export default {
 		background-color: var(--publicMainColor);
 	}
 
-	& /deep/ .el-button--danger {
+	& ::v-deep .el-button--danger {
 		height: 35px;
 		color: rgba(255, 255, 255, 1);
 		font-size: 14px;
@@ -525,7 +525,7 @@ export default {
 		background-color: var(--publicMainColor);
 	}
 
-    & /deep/ .el-button {
+    & ::v-deep .el-button {
       margin: 4px;
     }
   }
@@ -536,19 +536,19 @@ export default {
 		background: transparent;
 	}
 
-	.tables /deep/ .el-table__body tr {
+	.tables ::v-deep .el-table__body tr {
 				background-color: #f5f5f5 !important;
 				color: rgba(0, 1, 2, 1) !important;
 	 }
-	.tables /deep/ .el-table__body tr.el-table__row--striped td {
+	.tables ::v-deep .el-table__body tr.el-table__row--striped td {
 	    background: transparent;
 	}
-	.tables /deep/ .el-table__body tr.el-table__row--striped {
+	.tables ::v-deep .el-table__body tr.el-table__row--striped {
 		background-color: #F5F7FA !important;
 		color: rgba(0, 0, 0, 1) !important;
 	}
 
-	.tables /deep/ .el-table__body tr:hover>td {
+	.tables ::v-deep .el-table__body tr:hover>td {
 		background-color: var(--publicSubColor) !important;
 		color: #333 !important;
 	}</style>

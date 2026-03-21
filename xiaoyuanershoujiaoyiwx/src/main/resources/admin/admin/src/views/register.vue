@@ -304,7 +304,7 @@
           width: 100%;
           display: flex;
 
-          & /deep/ .el-form-item__content {
+          & ::v-deep .el-form-item__content {
             flex: 1;
             display: flex;
           }
@@ -322,7 +322,7 @@
           background-color: rgba(144, 238, 144, 0);
           box-shadow: 0 0 6px rgba(255,0,0,0);
 
-					& /deep/ .el-form-item__label {
+					& ::v-deep .el-form-item__label {
             width: 80px;
             line-height:40px;
             color: rgba(0, 0, 0, 1);
@@ -337,7 +337,7 @@
             box-shadow: 0 0 6px rgba(255,0,0,0);
 					}
 
-					& /deep/ .el-input__inner {
+					& ::v-deep .el-input__inner {
             width: 200px;
             height: 40px;
             line-height:40px;
@@ -356,7 +356,7 @@
 				}
 
         .send-code {
-          & /deep/ .el-input__inner {
+          & ::v-deep .el-input__inner {
             width: 120px;
             height: 40px;
             line-height:40px;

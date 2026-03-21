@@ -333,11 +333,11 @@
     .el-form-item {
         position: relative;
 
-    & /deep/ .el-form-item__content {
+    & ::v-deep .el-form-item__content {
           line-height: initial;
       }
 
-    & /deep/ .el-radio__label {
+    & ::v-deep .el-radio__label {
           width: auto;
           height: 14px;
           line-height: 14px;
@@ -353,7 +353,7 @@
           box-shadow: 0 0 6px rgba(255,0,0,0);
           text-align: left;
       }
-    & /deep/ .el-radio.is-checked .el-radio__label {
+    & ::v-deep .el-radio.is-checked .el-radio__label {
           width: auto;
           height: 14px;
           line-height: 14px;
@@ -369,7 +369,7 @@
           box-shadow: 0 0 6px rgba(255,0,0,0);
           text-align: left;
       }
-    & /deep/ .el-radio__inner {
+    & ::v-deep .el-radio__inner {
           width: 14px;
           height: 14px;
           margin: 0;
@@ -381,7 +381,7 @@
           background-color: rgba(255, 255, 255, 1);
           box-shadow: 0 0 6px rgba(255,0,0,0);
       }
-    & /deep/ .el-radio.is-checked .el-radio__inner {
+    & ::v-deep .el-radio.is-checked .el-radio__inner {
           width: 14px;
           height: 14px;
           margin: 0;
@@ -414,7 +414,7 @@
     // height: 40px;
         width: 100%;
 
-    & /deep/ input {
+    & ::v-deep input {
           background: transparent;
           border: 0px;
           -webkit-appearance: none;
@@ -494,7 +494,7 @@
     }
 
     .el-input {
-    & /deep/ input {
+    & ::v-deep input {
           padding: 0 130px 0 30px;
       }
     }
@@ -502,7 +502,7 @@
     }
 
     .setting {
-    & /deep/ .el-form-item__content {
+    & ::v-deep .el-form-item__content {
       // padding: 0 15px;
           box-sizing: border-box;
           line-height: 32px;
@@ -534,7 +534,7 @@
     }
 
     .el-input {
-    & /deep/ input {
+    & ::v-deep input {
           padding: 0 15px !important;
       }
     }
@@ -542,27 +542,27 @@
 
     .code.style2, .code.style3 {
     .el-input {
-    & /deep/ input {
+    & ::v-deep input {
           padding: 0 115px 0 15px;
       }
     }
     }
 
     .style3 {
-    & /deep/ .el-form-item__label {
+    & ::v-deep .el-form-item__label {
           padding-right: 6px;
           height: 42px;
           line-height: 42px;
       }
 
     .el-input {
-    & /deep/ input {
+    & ::v-deep input {
           padding: 0 15px !important;
       }
     }
     }
 
-    & /deep/ .el-form-item__label {
+    & ::v-deep .el-form-item__label {
           width: 30px;
           height: 30px;
           line-height: 30px;
@@ -579,7 +579,7 @@
       }
 
     .role {
-    & /deep/ .el-form-item__label {
+    & ::v-deep .el-form-item__label {
           width: 56px !important;
           height: 38px;
           line-height: 38px;
@@ -596,7 +596,7 @@
           text-align: left;
       }
 
-    & /deep/ .el-radio {
+    & ::v-deep .el-radio {
           margin-right: 12px;
         color: var(--publicMainColor);
       }
