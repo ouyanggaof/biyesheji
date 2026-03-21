@@ -35,12 +35,16 @@ jobs:
           cache: npm
           cache-dependency-path: ${{ env.ADMIN_DIR }}/package-lock.json
 
+      # package-lock.json 若在国内镜像生成，resolved 会指向华为云等；GitHub 海外 runner 常连不上导致 npm install 失败
       - name: Install & build
         working-directory: ${{ env.ADMIN_DIR }}
         env:
           # 关闭压缩，降低内存（与本地 build:nominify 一致）
           ADMIN_NO_MINIFY: '1'
         run: |
+          sed -i 's#https://repo.huaweicloud.com/repository/npm/#https://registry.npmjs.org/#g' package-lock.json
+          sed -i 's#https://registry.npmmirror.com/#https://registry.npmjs.org/#g' package-lock.json
+          npm config set registry https://registry.npmjs.org/
           npm install --no-optional --no-audit --progress=false
           node --max-old-space-size=6144 node_modules/@vue/cli-service/bin/vue-cli-service.js build
 
