@@ -1,0 +1,52 @@
+# 在 GitHub 云端打包 Vue 管理端，下载 dist 压缩包到本地使用
+#
+# 当前配置：Git 仓库根目录 = biyesheji（整仓）
+#
+# 使用方法：
+# 1. 把 biyesheji 推到 GitHub
+# 2. 打开仓库 Actions →「Build admin dist」→ Run workflow
+# 3. 完成后在运行详情页底部「Artifacts」下载 admin-dist.zip，解压覆盖到本地：
+#    xiaoyuanershoujiaoyiwx\src\main\resources\admin\admin\dist
+#
+# 若将来仓库根目录改为仅 xiaoyuanershoujiaoyiwx，把 ADMIN_DIR 改为：
+#   src/main/resources/admin/admin
+
+name: Build admin dist
+
+on:
+  workflow_dispatch:  # 仅手动运行，避免每次 push 都耗额度
+
+env:
+  # 相对仓库根目录 biyesheji
+  ADMIN_DIR: xiaoyuanershoujiaoyiwx/src/main/resources/admin/admin
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+          cache: npm
+          cache-dependency-path: ${{ env.ADMIN_DIR }}/package-lock.json
+
+      - name: Install & build
+        working-directory: ${{ env.ADMIN_DIR }}
+        env:
+          # 关闭压缩，降低内存（与本地 build:nominify 一致）
+          ADMIN_NO_MINIFY: '1'
+        run: |
+          npm install --no-optional --no-audit --progress=false
+          node --max-old-space-size=6144 node_modules/@vue/cli-service/bin/vue-cli-service.js build
+
+      - name: Upload dist zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-dist
+          path: ${{ env.ADMIN_DIR }}/dist
+          if-no-files-found: error

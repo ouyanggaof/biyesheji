@@ -1,0 +1,16 @@
+# ========== 切勿提交（体积大 / 路径过长 / 本机生成）==========
+**/node_modules/
+xiaoyuanershoujiaoyiwx/target/
+**/.idea/
+*.iml
+
+# Vue 打包产物（GitHub Actions 会在线生成；若本地有也可忽略）
+xiaoyuanershoujiaoyiwx/src/main/resources/admin/admin/dist/
+
+# 日志与临时
+*.log
+.DS_Store
+Thumbs.db
+
+# 小程序常见生成目录（若你有）
+mp-weixin/unpackage/

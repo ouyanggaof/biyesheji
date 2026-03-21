@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>用户咨询管理（免 Vue 打包）</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; margin: 0; padding: 16px; background: #f5f6f8; color: #333; }
+    h1 { font-size: 1.25rem; margin: 0 0 8px; }
+    .hint { font-size: 13px; color: #666; margin-bottom: 16px; line-height: 1.5; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+    label { font-size: 13px; }
+    input[type="text"], textarea { padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+    input.token-input { min-width: 280px; flex: 1; }
+    textarea { width: 100%; min-height: 100px; resize: vertical; }
+    button { padding: 8px 16px; border: none; border-radius: 4px; background: #00c292; color: #fff; cursor: pointer; font-size: 14px; }
+    button.secondary { background: #909399; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .err { color: #f56c6c; font-size: 13px; margin: 8px 0; }
+    .ok { color: #67c23a; font-size: 13px; margin: 8px 0; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 13px; vertical-align: top; }
+    th { background: #fafafa; font-weight: 600; }
+    tr:hover { background: #f9fffc; }
+    tr.selected { background: #e8f8f2; }
+    .panel { background: #fff; padding: 16px; border-radius: 6px; margin-top: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1>用户咨询 / 一对一问答（管理端）</h1>
+  <p class="hint">
+    本页为<strong>独立静态页</strong>，不依赖 Vue 打包。<br />
+    请先使用原后台 <code>index.html</code> 以<strong>管理员</strong>账号登录（同域名同端口时，会自动读取 <code>localStorage.Token</code>）。<br />
+    若 Token 读不到，请在下方粘贴登录接口返回的 Token。
+  </p>
+
+  <div class="row">
+    <label>Token（可选）</label>
+    <input type="text" id="tokenInput" class="token-input" placeholder="留空则尝试从 localStorage 读取 Token" autocomplete="off" />
+    <button type="button" id="btnLoad" class="secondary">刷新列表</button>
+  </div>
+  <div id="msg"></div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:50px">ID</th>
+        <th>用户</th>
+        <th>商家</th>
+        <th>问题</th>
+        <th>回复</th>
+        <th>状态</th>
+        <th>提问时间</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <div class="panel" id="detailPanel" style="display:none;">
+    <h2 style="font-size:1rem;margin:0 0 12px;">编辑回复（ID <span id="curId"></span>）</h2>
+    <p><strong>问题：</strong></p>
+    <div id="issueText" style="white-space:pre-wrap;margin-bottom:12px;color:#555;"></div>
+    <label for="replyText"><strong>回复内容</strong></label>
+    <textarea id="replyText"></textarea>
+    <div class="row" style="margin-top:12px;">
+      <button type="button" id="btnSave">保存回复</button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var API = '/xiaoyuanershoujiaoyiwx';
+
+      function readStoredToken() {
+        var raw = localStorage.getItem('Token');
+        if (!raw) return '';
+        try { return JSON.parse(raw); } catch (e) { return String(raw).replace(/^"|"$/g, ''); }
+      }
+
+      function token() {
+        var manual = document.getElementById('tokenInput').value.trim();
+        if (manual) return manual;
+        return readStoredToken();
+      }
+
+      function showMsg(text, isErr) {
+        var el = document.getElementById('msg');
+        el.className = isErr ? 'err' : 'ok';
+        el.textContent = text || '';
+      }
+
+      function api(path, opts) {
+        opts = opts || {};
+        var headers = opts.headers || {};
+        headers['Token'] = token();
+        if (!headers['Content-Type'] && opts.body) headers['Content-Type'] = 'application/json; charset=utf-8';
+        return fetch(API + path, {
+          method: opts.method || 'GET',
+          headers: headers,
+          body: opts.body,
+          credentials: 'include'
+        }).then(function (r) { return r.json(); });
+      }
+
+      var selected = null;
+
+      function renderRows(list) {
+        var tb = document.getElementById('tbody');
+        tb.innerHTML = '';
+        (list || []).forEach(function (row) {
+          var tr = document.createElement('tr');
+          tr.dataset.id = row.id;
+          tr.innerHTML =
+            '<td>' + row.id + '</td>' +
+            '<td>' + (row.yonghuName || row.yonghuId || '') + '</td>' +
+            '<td>' + (row.shangjiaName || row.shangjiaId || '') + '</td>' +
+            '<td>' + esc(row.shangjiaChatIssueText) + '</td>' +
+            '<td>' + esc(row.shangjiaChatReplyText) + '</td>' +
+            '<td>' + esc(row.zhuangtaiValue != null ? row.zhuangtaiValue : row.zhuangtaiTypes) + '</td>' +
+            '<td>' + esc(row.issueTime) + '</td>';
+          tr.addEventListener('click', function () {
+            Array.prototype.forEach.call(tb.querySelectorAll('tr'), function (x) { x.classList.remove('selected'); });
+            tr.classList.add('selected');
+            selected = row;
+            document.getElementById('detailPanel').style.display = 'block';
+            document.getElementById('curId').textContent = row.id;
+            document.getElementById('issueText').textContent = row.shangjiaChatIssueText || '';
+            document.getElementById('replyText').value = row.shangjiaChatReplyText || '';
+          });
+          tb.appendChild(tr);
+        });
+      }
+
+      function esc(s) {
+        if (s == null) return '';
+        s = String(s);
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+
+      function loadList() {
+        showMsg('加载中…', false);
+        api('/shangjiaChat/page?page=1&limit=200', { method: 'GET' }).then(function (data) {
+          if (data.code !== 0 && data.code !== undefined) {
+            showMsg('加载失败：' + (data.msg || JSON.stringify(data)), true);
+            return;
+          }
+          var page = data.data || {};
+          renderRows(page.list || []);
+          showMsg('共 ' + (page.totalCount != null ? page.totalCount : (page.list || []).length) + ' 条。点击一行可编辑回复。', false);
+        }).catch(function (e) {
+          showMsg('请求异常：' + e, true);
+        });
+      }
+
+      document.getElementById('btnLoad').addEventListener('click', loadList);
+      document.getElementById('btnSave').addEventListener('click', function () {
+        if (!selected) {
+          showMsg('请先点击表格中的一条记录', true);
+          return;
+        }
+        var reply = document.getElementById('replyText').value;
+        showMsg('保存中…', false);
+        api('/shangjiaChat/info/' + selected.id, { method: 'GET' }).then(function (infoRes) {
+          if (infoRes.code !== 0 && infoRes.code !== undefined) {
+            showMsg('拉取详情失败：' + (infoRes.msg || JSON.stringify(infoRes)), true);
+            return;
+          }
+          var body = infoRes.data || {};
+          body.shangjiaChatReplyText = reply;
+          return api('/shangjiaChat/update', { method: 'POST', body: JSON.stringify(body) });
+        }).then(function (data) {
+          if (!data) return;
+          if (data.code !== 0 && data.code !== undefined) {
+            showMsg('保存失败：' + (data.msg || JSON.stringify(data)), true);
+            return;
+          }
+          showMsg('保存成功', false);
+          loadList();
+        }).catch(function (e) {
+          showMsg('请求异常：' + e, true);
+        });
+      });
+
+      document.getElementById('tokenInput').value = readStoredToken() || '';
+      loadList();
+    })();
+  </script>
+</body>
+</html>

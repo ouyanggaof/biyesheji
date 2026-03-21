@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <title>校园二手交易小程序</title>
+    <!-- Element 样式走 CDN，避免打包时编译整包 theme-chalk 撑爆内存（与 package.json 中 element-ui 版本一致） -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.15.10/lib/theme-chalk/index.css">
+</head>
+
+<body>
+<noscript>
+    <strong>We're sorry but mas-creator-admin doesn't work properly without JavaScript enabled. Please enable it to
+        continue.</strong>
+</noscript>
+<div id="app"></div>
+<% if (htmlWebpackPlugin.options.externalsScripts && htmlWebpackPlugin.options.externalsScripts.length) { %>
+<% for (var i = 0; i < htmlWebpackPlugin.options.externalsScripts.length; i++) { %>
+<script src="<%= htmlWebpackPlugin.options.externalsScripts[i] %>"></script>
+<% } %>
+<% } %>
+<!-- built files will be auto injected -->
+</body>
+
+</html>

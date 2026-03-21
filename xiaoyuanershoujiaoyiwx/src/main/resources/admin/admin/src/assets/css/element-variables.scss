@@ -1,0 +1,6 @@
+/**
+ * 已弃用：原先在此 @import 整包 element-ui theme-chalk，生产打包极易 OOM。
+ * 请使用 index.html 中的 Element 官方 CDN 样式 + element-theme-override.css。
+ * main.js 已改为引入 element-theme-override.css。
+ */
+$--color-primary: #00c292 !default;
