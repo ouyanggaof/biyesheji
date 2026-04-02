@@ -167,30 +167,30 @@
 </script>
 <style lang="scss" scoped>
 	.el-radio__input.is-checked .el-radio__inner {
-		border-color: #00c292;
-		background: #00c292;
+		border-color: var(--publicMainColor);
+		background: var(--publicMainColor);
 	}
 
 	.el-radio__input.is-checked .el-radio__inner {
-		border-color: #00c292;
-		background: #00c292;
+		border-color: var(--publicMainColor);
+		background: var(--publicMainColor);
 	}
 
 	.el-radio__input.is-checked .el-radio__inner {
-		border-color: #00c292;
-		background: #00c292;
+		border-color: var(--publicMainColor);
+		background: var(--publicMainColor);
 	}
 
 	.el-radio__input.is-checked+.el-radio__label {
-		color: #00c292;
+		color: var(--publicMainColor);
 	}
 
 	.el-radio__input.is-checked+.el-radio__label {
-		color: #00c292;
+		color: var(--publicMainColor);
 	}
 
 	.el-radio__input.is-checked+.el-radio__label {
-		color: #00c292;
+		color: var(--publicMainColor);
 	}
 
 	.h1 {

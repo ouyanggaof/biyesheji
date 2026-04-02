@@ -82,7 +82,7 @@
 	}
 
 	a:hover {
-		background: #00c292;
+		background: var(--publicMainColor);
 	}
 
 	.nav-list {

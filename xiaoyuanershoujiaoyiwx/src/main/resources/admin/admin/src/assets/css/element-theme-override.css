@@ -1,59 +1,85 @@
 /**
- * 原 element-variables.scss 使用 $--color-primary: #00c292 并 @import 整包 theme-chalk，
- * 在生产打包时 Dart Sass 编译体积过大易导致 OOM。
- * 主题样式改由 CDN index.css + 本文件覆盖主色。
+ * Element 主色覆盖（天蓝色）+ 生产构建用 CDN index.css 配合使用。
+ * 删除按钮统一红色，避免各列表页将 danger 误写为主色导致呈粉色。
  */
+/* ---------- 主色：天蓝 ---------- */
 .el-button--primary {
-  background-color: #00c292 !important;
-  border-color: #00c292 !important;
+  background-color: #2B9FE5 !important;
+  border-color: #2B9FE5 !important;
 }
 .el-button--primary:hover,
 .el-button--primary:focus {
-  background-color: #00b380 !important;
-  border-color: #00b380 !important;
+  background-color: #52B0ED !important;
+  border-color: #52B0ED !important;
 }
 .el-button--primary.is-active,
 .el-button--primary:active {
-  background-color: #009e73 !important;
-  border-color: #009e73 !important;
+  background-color: #1F8AD4 !important;
+  border-color: #1F8AD4 !important;
 }
 .el-menu-item.is-active {
-  color: #00c292 !important;
+  color: #2B9FE5 !important;
 }
 .el-submenu.is-active > .el-submenu__title {
-  border-bottom-color: #00c292 !important;
+  border-bottom-color: #2B9FE5 !important;
 }
 .el-tabs__active-bar {
-  background-color: #00c292 !important;
+  background-color: #2B9FE5 !important;
 }
 .el-tabs__item.is-active {
-  color: #00c292 !important;
+  color: #2B9FE5 !important;
 }
 .el-pagination.is-background .el-pager li:not(.disabled).active {
-  background-color: #00c292 !important;
+  background-color: #2B9FE5 !important;
 }
 .el-checkbox__input.is-checked .el-checkbox__inner,
 .el-checkbox__input.is-indeterminate .el-checkbox__inner {
-  background-color: #00c292 !important;
-  border-color: #00c292 !important;
+  background-color: #2B9FE5 !important;
+  border-color: #2B9FE5 !important;
 }
 .el-radio__input.is-checked .el-radio__inner {
-  background-color: #00c292 !important;
-  border-color: #00c292 !important;
+  background-color: #2B9FE5 !important;
+  border-color: #2B9FE5 !important;
 }
 .el-switch.is-checked .el-switch__core {
-  background-color: #00c292 !important;
+  background-color: #2B9FE5 !important;
 }
 .el-date-table td.today span {
-  color: #00c292 !important;
+  color: #2B9FE5 !important;
 }
 .el-date-table td.available:hover {
-  color: #00c292 !important;
+  color: #2B9FE5 !important;
 }
 .el-select .el-input.is-focus .el-input__inner {
-  border-color: #00c292 !important;
+  border-color: #2B9FE5 !important;
 }
 .el-textarea__inner:focus,
 .el-input__inner:focus {
-  border-color: #00c292 !important;
+  border-color: #2B9FE5 !important;
+}
+
+/* ---------- 删除 / 危险按钮：统一红色 ---------- */
+#app .el-button--danger {
+  background-color: #f56c6c !important;
+  border-color: #f56c6c !important;
+  color: #ffffff !important;
+}
+#app .el-button--danger:hover,
+#app .el-button--danger:focus {
+  background-color: #f78989 !important;
+  border-color: #f78989 !important;
+  color: #ffffff !important;
+}
+#app .el-button--danger:active {
+  background-color: #dd6161 !important;
+  border-color: #dd6161 !important;
+  color: #ffffff !important;
+}
+#app .el-button--danger.is-disabled,
+#app .el-button--danger.is-disabled:hover,
+#app .el-button--danger.is-disabled:focus,
+#app .el-button--danger.is-disabled:active {
+  background-color: #fab6b6 !important;
+  border-color: #fab6b6 !important;
+  color: #ffffff !important;
 }

@@ -1,6 +1,7 @@
 :root {
-    /* 1 全局公共主颜色 */
-    --publicMainColor: #EF96C5;
-    /* 1 全局公共副颜色 */
-    --publicSubColor: #95d3d9;
+    /* 天蓝色主题：主色 / 辅色 */
+    --publicMainColor: #2B9FE5;
+    --publicSubColor: #87CEEB;
+    /* 删除/危险操作统一使用标准红（供个别样式引用） */
+    --publicDangerColor: #F56C6C;
 }
