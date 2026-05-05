@@ -17,6 +17,7 @@ import com.service.*;
 import com.utils.CommonUtil;
 import com.utils.PageUtils;
 import com.utils.R;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -93,6 +94,8 @@ public class ShangjiaChatController {
         entity.setInsertTime(new Date());
         if (entity.getIssueTime() == null)
             entity.setIssueTime(new Date());
+        if (entity.getZhuangtaiTypes() == null)
+            entity.setZhuangtaiTypes(1); // 字典 zhuangtai_types：1 未回复
         shangjiaChatService.insert(entity);
         return R.ok();
     }
@@ -102,8 +105,27 @@ public class ShangjiaChatController {
      */
     @RequestMapping("/update")
     public R update(@RequestBody ShangjiaChatEntity entity, HttpServletRequest request) {
-        if (entity.getReplyTime() == null && entity.getShangjiaChatReplyText() != null && !entity.getShangjiaChatReplyText().isEmpty())
-            entity.setReplyTime(new Date());
+        ShangjiaChatEntity old = entity.getId() != null ? shangjiaChatService.selectById(entity.getId()) : null;
+        String newReply = entity.getShangjiaChatReplyText();
+        boolean replyNonEmpty = StringUtils.isNotBlank(newReply);
+        if (old != null) {
+            String oldReply = old.getShangjiaChatReplyText();
+            boolean wasEmpty = StringUtils.isBlank(oldReply);
+            if (replyNonEmpty && wasEmpty) {
+                entity.setReplyTime(new Date());
+                if (entity.getZhuangtaiTypes() == null)
+                    entity.setZhuangtaiTypes(2); // 已回复
+            } else if (replyNonEmpty && entity.getReplyTime() == null && old.getReplyTime() == null) {
+                entity.setReplyTime(new Date());
+                if (entity.getZhuangtaiTypes() == null)
+                    entity.setZhuangtaiTypes(2);
+            }
+        } else {
+            if (replyNonEmpty && entity.getReplyTime() == null)
+                entity.setReplyTime(new Date());
+            if (replyNonEmpty && entity.getZhuangtaiTypes() == null)
+                entity.setZhuangtaiTypes(2);
+        }
         shangjiaChatService.updateById(entity);
         return R.ok();
     }
@@ -163,6 +185,8 @@ public class ShangjiaChatController {
         entity.setCreateTime(new Date());
         entity.setInsertTime(new Date());
         entity.setIssueTime(new Date());
+        if (entity.getZhuangtaiTypes() == null)
+            entity.setZhuangtaiTypes(1);
         shangjiaChatService.insert(entity);
         return R.ok();
     }

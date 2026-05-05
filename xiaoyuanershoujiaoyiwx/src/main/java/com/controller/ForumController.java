@@ -49,6 +49,21 @@ public class ForumController {
     @Autowired
     private ForumService forumService;
 
+    private R checkForumSensitive(ForumEntity forum) {
+        if (forum == null) {
+            return null;
+        }
+        String w = SensitiveWordUtil.findSensitive(forum.getForumName());
+        if (w != null) {
+            return R.error(511, "帖子标题包含不当用语，请修改后发布");
+        }
+        w = SensitiveWordUtil.findSensitive(forum.getForumContent());
+        if (w != null) {
+            return R.error(511, "帖子内容包含不当用语，请修改后发布");
+        }
+        return null;
+    }
+
 
     @Autowired
     private TokenService tokenService;
@@ -136,6 +151,11 @@ public class ForumController {
     public R save(@RequestBody ForumEntity forum, HttpServletRequest request){
         logger.debug("save方法:,,Controller:{},,forum:{}",this.getClass().getName(),forum.toString());
 
+        R sens = checkForumSensitive(forum);
+        if (sens != null) {
+            return sens;
+        }
+
         String role = String.valueOf(request.getSession().getAttribute("role"));
         if(false)
             return R.error(511,"永远不会进入");
@@ -170,6 +190,12 @@ public class ForumController {
     @RequestMapping("/update")
     public R update(@RequestBody ForumEntity forum, HttpServletRequest request) throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException, InstantiationException {
         logger.debug("update方法:,,Controller:{},,forum:{}",this.getClass().getName(),forum.toString());
+
+        R sens = checkForumSensitive(forum);
+        if (sens != null) {
+            return sens;
+        }
+
         ForumEntity oldForumEntity = forumService.selectById(forum.getId());//查询原先数据
 
         String role = String.valueOf(request.getSession().getAttribute("role"));
@@ -323,6 +349,12 @@ public class ForumController {
     @RequestMapping("/add")
     public R add(@RequestBody ForumEntity forum, HttpServletRequest request){
         logger.debug("add方法:,,Controller:{},,forum:{}",this.getClass().getName(),forum.toString());
+
+        R sens = checkForumSensitive(forum);
+        if (sens != null) {
+            return sens;
+        }
+
         Wrapper<ForumEntity> queryWrapper = new EntityWrapper<ForumEntity>()
             .eq("forum_name", forum.getForumName())
             .eq("yonghu_id", forum.getYonghuId())

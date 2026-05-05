@@ -46,6 +46,21 @@ public class ShangpinOrderController {
 
     private static final String TABLE_NAME = "shangpinOrder";
 
+    /** 字典 quwu_types：2 = 配送/快递（见 db_patch_quwu_types_dictionary.sql） */
+    private static final int QUWU_TYPES_PEISONG_KUAIDI = 2;
+
+    /**
+     * 配送/快递订单必须填写快递公司与单号（字段已在表 shangpin_order：shangpin_order_courier_name / shangpin_order_courier_number）
+     */
+    private R validateCourierIfDelivery(ShangpinOrderEntity order) {
+        if (order != null && order.getQuwuTypes() != null && order.getQuwuTypes() == QUWU_TYPES_PEISONG_KUAIDI) {
+            if (StringUtils.isBlank(order.getShangpinOrderCourierName())
+                    || StringUtils.isBlank(order.getShangpinOrderCourierNumber()))
+                return R.error(511, "取物类型为「配送/快递」时，快递公司与订单快递单号不能为空");
+        }
+        return null;
+    }
+
     @Autowired
     private ShangpinOrderService shangpinOrderService;
 
@@ -152,6 +167,9 @@ public class ShangpinOrderController {
 
         shangpinOrder.setCreateTime(new Date());
         shangpinOrder.setInsertTime(new Date());
+        R courierErr = validateCourierIfDelivery(shangpinOrder);
+        if (courierErr != null)
+            return courierErr;
         shangpinOrderService.insert(shangpinOrder);
 
         return R.ok();
@@ -164,6 +182,18 @@ public class ShangpinOrderController {
     public R update(@RequestBody ShangpinOrderEntity shangpinOrder, HttpServletRequest request) throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException, InstantiationException {
         logger.debug("update方法:,,Controller:{},,shangpinOrder:{}",this.getClass().getName(),shangpinOrder.toString());
         ShangpinOrderEntity oldShangpinOrderEntity = shangpinOrderService.selectById(shangpinOrder.getId());//查询原先数据
+        if (oldShangpinOrderEntity == null)
+            return R.error(511, "查不到订单");
+        Integer quwu = shangpinOrder.getQuwuTypes() != null ? shangpinOrder.getQuwuTypes() : oldShangpinOrderEntity.getQuwuTypes();
+        String courierName = shangpinOrder.getShangpinOrderCourierName() != null ? shangpinOrder.getShangpinOrderCourierName() : oldShangpinOrderEntity.getShangpinOrderCourierName();
+        String courierNo = shangpinOrder.getShangpinOrderCourierNumber() != null ? shangpinOrder.getShangpinOrderCourierNumber() : oldShangpinOrderEntity.getShangpinOrderCourierNumber();
+        ShangpinOrderEntity effective = new ShangpinOrderEntity();
+        effective.setQuwuTypes(quwu);
+        effective.setShangpinOrderCourierName(courierName);
+        effective.setShangpinOrderCourierNumber(courierNo);
+        R courierErr = validateCourierIfDelivery(effective);
+        if (courierErr != null)
+            return courierErr;
 
         String role = String.valueOf(request.getSession().getAttribute("role"));
 //        if(false)
@@ -364,7 +394,7 @@ public class ShangpinOrderController {
                 return R.error(511,"用户金额不能为空");
             double balance = yonghuEntity.getNewMoney() - shangpinEntity.getShangpinNewMoney()*shangpinOrder.getBuyNumber();//余额
             if(balance<0)
-                return R.error(511,"余额不够支付");
+                return R.error(511,"余额不足，请先充值后再下单");
             shangpinOrder.setShangpinOrderTypes(101); //设置订单状态为已支付
             shangpinOrder.setShangpinOrderTruePrice(shangpinEntity.getShangpinNewMoney()*shangpinOrder.getBuyNumber()); //设置实付价格
             shangpinOrder.setYonghuId(userId); //设置订单支付人id
@@ -568,9 +598,14 @@ public class ShangpinOrderController {
     public R deliver(Integer id ,String shangpinOrderCourierNumber, String shangpinOrderCourierName , HttpServletRequest request){
         logger.debug("refund:,,Controller:{},,ids:{}",this.getClass().getName(),id.toString());
         ShangpinOrderEntity  shangpinOrderEntity = shangpinOrderService.selectById(id);
-        shangpinOrderEntity.setShangpinOrderTypes(103);//设置订单状态为已发货
+        if (shangpinOrderEntity == null)
+            return R.error(511, "查不到订单");
         shangpinOrderEntity.setShangpinOrderCourierNumber(shangpinOrderCourierNumber);
         shangpinOrderEntity.setShangpinOrderCourierName(shangpinOrderCourierName);
+        R courierErr = validateCourierIfDelivery(shangpinOrderEntity);
+        if (courierErr != null)
+            return courierErr;
+        shangpinOrderEntity.setShangpinOrderTypes(103);//设置订单状态为已发货
         shangpinOrderService.updateById( shangpinOrderEntity);
 
         return R.ok();

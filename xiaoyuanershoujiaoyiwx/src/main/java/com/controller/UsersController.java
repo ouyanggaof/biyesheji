@@ -31,6 +31,9 @@ import com.utils.R;
 @RequestMapping("users")
 @RestController
 public class UsersController {
+
+	/** 数据库 users.role 设为该值时，可修改其他管理员账号（指导老师建议） */
+	public static final String SUPER_ADMIN_ROLE = "超级管理员";
 	
 	@Autowired
 	private UsersService usersService;
@@ -170,9 +173,15 @@ public class UsersController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody UsersEntity user){
-//        ValidatorUtils.validateEntity(user);
-        usersService.updateById(user);//全部更新
+    public R update(@RequestBody UsersEntity user, HttpServletRequest request){
+        Integer sessionUid = (Integer) request.getSession().getAttribute("userId");
+        String sessionRole = String.valueOf(request.getSession().getAttribute("role"));
+        if (user.getId() != null && sessionUid != null && !user.getId().equals(sessionUid)) {
+            if (!SUPER_ADMIN_ROLE.equals(sessionRole)) {
+                return R.error(511, "仅超级管理员可修改其他管理员账号信息");
+            }
+        }
+        usersService.updateById(user);
         return R.ok();
     }
 

@@ -234,10 +234,11 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column width="300" :align="contents.tableAlign"
+                    <el-table-column width="220" :align="contents.tableAlign"
                                      header-align="center"
                                      label="操作">
                         <template slot-scope="scope">
+                            <div class="table-op-grid">
                             <el-button v-if="sessionTable=='false'" type="primary" size="mini" @click="wuyong(scope.row.id)">无用按钮</el-button>
                             <el-button v-if="sessionTable=='false'" type="success" icon="el-icon-printer" size="mini" @click="dayinOpen(scope.row)">打印</el-button>
                             <el-button v-if="isAuth('shangpin','查看')" type="success" icon="el-icon-tickets" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">详情</el-button>
@@ -246,7 +247,7 @@
                             <el-button v-if="isAuth('shangpin','修改')" type="primary" icon="el-icon-tickets" size="mini" @click="shangxia(scope.row.id,scope.row.shangxiaTypes)">{{scope.row.shangxiaTypes == 1?'下架':'上架'}}</el-button>
                             <!--<el-button v-if="isAuth('shangpin','修改')" type="primary" icon="el-icon-add-location" size="mini" @click="plusShangpinKucunNumber(scope.row.id,scope.row.shangpinKucunNumber)">增加商品库存</el-button>-->
                             <!--<el-button v-if="isAuth('shangpin','修改')" type="primary" icon="el-icon-delete-location" size="mini" @click="reduceShangpinKucunNumber(scope.row.id,scope.row.shangpinKucunNumber)">减少商品库存</el-button>-->
-
+                            </div>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -1178,6 +1179,20 @@
 	.tables ::v-deep .el-table__body tr:hover>td {
 		background-color: var(--publicSubColor) !important;
 		color: #333 !important;
-	}</style>
+	}
+
+	/* 操作列：一行两个按钮（2×2） */
+	.table-op-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 6px;
+		max-width: 220px;
+	}
+	.tables ::v-deep .table-op-grid .el-button {
+		margin: 0 !important;
+		width: 100%;
+		box-sizing: border-box;
+	}
+</style>
 
 

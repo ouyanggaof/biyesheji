@@ -66,13 +66,9 @@ public class ShangpinController {
     @Autowired
     private ShangpinCommentbackService shangpinCommentbackService;//商品评价
     @Autowired
-    private ShangpinOrderService shangpinOrderService;//商品订单
-    @Autowired
     private YonghuService yonghuService;//用户
     @Autowired
     private UsersService usersService;//管理员
-
-
     /**
     * 后端列表
     */
@@ -288,71 +284,6 @@ public class ShangpinController {
     }
 
 
-
-    /**
-    * 个性推荐
-    */
-    @IgnoreAuth
-    @RequestMapping("/gexingtuijian")
-    public R gexingtuijian(@RequestParam Map<String, Object> params, HttpServletRequest request){
-        logger.debug("gexingtuijian方法:,,Controller:{},,params:{}",this.getClass().getName(),JSONObject.toJSONString(params));
-        CommonUtil.checkMap(params);
-        List<ShangpinView> returnShangpinViewList = new ArrayList<>();
-
-        //查询订单
-        Map<String, Object> params1 = new HashMap<>(params);params1.put("sort","id");params1.put("yonghuId",request.getSession().getAttribute("userId"));
-        params1.put("shangxiaTypes",1);
-        params1.put("shangpinYesnoTypes",2);
-        PageUtils pageUtils = shangpinOrderService.queryPage(params1);
-        List<ShangpinOrderView> orderViewsList =(List<ShangpinOrderView>)pageUtils.getList();
-        Map<Integer,Integer> typeMap=new HashMap<>();//购买的类型list
-        for(ShangpinOrderView orderView:orderViewsList){
-            Integer shangpinTypes = orderView.getShangpinTypes();
-            if(typeMap.containsKey(shangpinTypes)){
-                typeMap.put(shangpinTypes,typeMap.get(shangpinTypes)+1);
-            }else{
-                typeMap.put(shangpinTypes,1);
-            }
-        }
-        List<Integer> typeList = new ArrayList<>();//排序后的有序的类型 按最多到最少
-        typeMap.entrySet().stream().sorted((o1, o2) -> o2.getValue() - o1.getValue()).forEach(e -> typeList.add(e.getKey()));//排序
-        Integer limit = Integer.valueOf(String.valueOf(params.get("limit")));
-        for(Integer type:typeList){
-            Map<String, Object> params2 = new HashMap<>(params);params2.put("shangpinTypes",type);
-            params2.put("shangxiaTypes",1);
-            params2.put("shangpinYesnoTypes",2);
-            PageUtils pageUtils1 = shangpinService.queryPage(params2);
-            List<ShangpinView> shangpinViewList =(List<ShangpinView>)pageUtils1.getList();
-            returnShangpinViewList.addAll(shangpinViewList);
-            if(returnShangpinViewList.size()>= limit) break;//返回的推荐数量大于要的数量 跳出循环
-        }
-        params.put("shangxiaTypes",1);
-        params.put("shangpinYesnoTypes",2);
-        //正常查询出来商品,用于补全推荐缺少的数据
-        PageUtils page = shangpinService.queryPage(params);
-        if(returnShangpinViewList.size()<limit){//返回数量还是小于要求数量
-            int toAddNum = limit - returnShangpinViewList.size();//要添加的数量
-            List<ShangpinView> shangpinViewList =(List<ShangpinView>)page.getList();
-            for(ShangpinView shangpinView:shangpinViewList){
-                Boolean addFlag = true;
-                for(ShangpinView returnShangpinView:returnShangpinViewList){
-                    if(returnShangpinView.getId().intValue() ==shangpinView.getId().intValue()) addFlag=false;//返回的数据中已存在此商品
-                }
-                if(addFlag){
-                    toAddNum=toAddNum-1;
-                    returnShangpinViewList.add(shangpinView);
-                    if(toAddNum==0) break;//够数量了
-                }
-            }
-        }else {
-            returnShangpinViewList = returnShangpinViewList.subList(0, limit);
-        }
-
-        for(ShangpinView c:returnShangpinViewList)
-            dictionaryService.dictionaryConvert(c, request);
-        page.setList(returnShangpinViewList);
-        return R.ok().put("data", page);
-    }
 
     /**
     * 前端列表

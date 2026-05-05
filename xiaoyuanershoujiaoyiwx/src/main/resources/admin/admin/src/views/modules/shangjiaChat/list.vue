@@ -57,10 +57,9 @@
                     <el-table-column :sortable="contents.tableSortable" :align="contents.tableAlign" prop="zhuangtaiValue" header-align="center" label="状态" width="90">
                         <template slot-scope="scope">{{scope.row.zhuangtaiValue || '-'}}</template>
                     </el-table-column>
-                    <el-table-column width="260" :align="contents.tableAlign" header-align="center" label="操作">
+                    <el-table-column width="200" :align="contents.tableAlign" header-align="center" label="操作">
                         <template slot-scope="scope">
                             <el-button v-if="isAuth('shangjiaChat','查看')" type="success" icon="el-icon-tickets" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">详情</el-button>
-                            <el-button v-if="isAuth('shangjiaChat','修改')" type="primary" icon="el-icon-edit" size="mini" @click="addOrUpdateHandler(scope.row.id)">回复/修改</el-button>
                             <el-button v-if="isAuth('shangjiaChat','删除')" type="danger" icon="el-icon-delete" size="mini" @click="deleteHandler(scope.row.id)">删除</el-button>
                         </template>
                     </el-table-column>

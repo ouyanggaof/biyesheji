@@ -288,17 +288,13 @@
                 }
             });
 
-            let val = [
-                {
-                    key:'page',
-                    val:1
-                },
-                {
-                    key:'limit',
-                    val:6
-                },
-            ]
-            let shangpin = await this.$api.requestCondition('shangpin','gexingtuijian',val);
+            let shangpin = await this.$api.list('shangpin', {
+                page: 1,
+                limit: 6,
+                shangpinDelete: 1,
+                shangxiaTypes: 1,
+                shangpinYesnoTypes: 2,
+            });
 
             this.shangpinList = shangpin.data.list
             this.shangpinList.forEach(function(item, index) {

@@ -236,20 +236,6 @@ export const detail = (tableName, id) => {
 	});
 }
 /**
- * 智能推荐
- */
-export const recommend = (tableName, page = 1, limit = 10) => {
-	let data = {
-		page: page,
-		limit: limit
-	}
-	return http.request({
-		url: `${tableName}/autoSort?limit=5`,
-		method: 'get',
-		data,
-	});
-}
-/**
  * 上传
  */
 export const upload = (callback) => {
@@ -328,7 +314,6 @@ export default {
 	update, // 修改
 	del, // 删除
 	info, // 单条信息查询,
-	recommend, // 智能推荐
 	save, // 保存
 	upload, // 上传
 	queryScore,//评分查询

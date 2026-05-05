@@ -52,6 +52,7 @@
 </template>
 
 <script>
+    import base from '../../api/base'
     export default {
         data() {
             return {
@@ -163,8 +164,37 @@
 								 quwuTypes: _this.quwuTypes,
 								 shangpinOrderPaymentTypes:  _this.shangpinOrderPaymentTypes,
 							 }
-							await _this.$api.add('shangpinOrder',data);
-                            _this.$utils.jump('/pages/shangpinOrder/list');
+							uni.request({
+							    url: base.url + 'shangpinOrder/add',
+							    method: 'POST',
+							    header: {
+							        'Content-Type': 'application/json;charset=UTF-8',
+							        'Token': uni.getStorageSync('token')
+							    },
+							    data: data,
+							    success: (res) => {
+							        const rs = res.data
+							        if (rs.code === 0) {
+							            _this.$utils.jump('/pages/shangpinOrder/list')
+							        } else if (rs.msg && (rs.msg.indexOf('余额') >= 0 || rs.msg.indexOf('充值') >= 0)) {
+							            uni.showModal({
+							                title: '提示',
+							                content: rs.msg + '\n是否前往充值？',
+							                confirmText: '去充值',
+							                success: (m) => {
+							                    if (m.confirm) {
+							                        uni.navigateTo({ url: '/pages/recharge/recharge' })
+							                    }
+							                }
+							            })
+							        } else {
+							            uni.showToast({ title: rs.msg || '下单失败', icon: 'none' })
+							        }
+							    },
+							    fail: () => {
+							        uni.showToast({ title: '网络异常', icon: 'none' })
+							    }
+							})
                         }
                     }
                 });

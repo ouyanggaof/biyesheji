@@ -181,17 +181,18 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column width="300" :align="contents.tableAlign"
+                    <el-table-column width="220" :align="contents.tableAlign"
                                      header-align="center"
                                      label="操作">
                         <template slot-scope="scope">
+                            <div class="table-op-grid">
                             <el-button v-if="sessionTable=='false'" type="primary" size="mini" @click="wuyong(scope.row.id)">无用按钮</el-button>
                             <el-button v-if="sessionTable=='false'" type="success" icon="el-icon-printer" size="mini" @click="dayinOpen(scope.row)">打印</el-button>
                             <el-button v-if="isAuth('yonghu','查看')" type="success" icon="el-icon-tickets" size="mini" @click="addOrUpdateHandler(scope.row.id,'info')">详情</el-button>
                             <el-button v-if="isAuth('yonghu','修改')" type="primary" icon="el-icon-edit" size="mini" @click="addOrUpdateHandler(scope.row.id)">修改</el-button>
                             <el-button v-if="isAuth('yonghu','删除')" type="danger" icon="el-icon-delete" size="mini" @click="deleteHandler(scope.row.id)">删除</el-button>
-
-                            <el-button v-if="isAuth('yonghu','修改')" type="success" icon="el-icon-tickets" size="mini" @click="resetPassword(scope.row.id)">重置密码</el-button>
+                            <el-button v-if="isAuth('yonghu','修改')" type="success" icon="el-icon-tickets" size="mini" @click="resetPassword(scope.row.id)">重置</el-button>
+                            </div>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -960,6 +961,19 @@
 	.tables ::v-deep .el-table__body tr:hover>td {
 		background-color: var(--publicSubColor) !important;
 		color: #333 !important;
-	}</style>
+	}
+
+	.table-op-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 6px;
+		max-width: 220px;
+	}
+	.tables ::v-deep .table-op-grid .el-button {
+		margin: 0 !important;
+		width: 100%;
+		box-sizing: border-box;
+	}
+</style>
 
 
